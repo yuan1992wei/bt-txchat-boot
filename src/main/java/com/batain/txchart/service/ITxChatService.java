@@ -1,6 +1,7 @@
 package com.batain.txchart.service;
 
 import com.batain.common.Entity.Result;
+import com.batain.txchart.domain.MediaData;
 
 /**
  * 疼过sdk获取信息
@@ -73,5 +74,5 @@ public interface ITxChatService {
      * @param timeout
      * @return
      */
-    public Result getMediaData(String sdkId, String indexbuf, String sdkfileid, String proxy, String passwd, int timeout);
+    public MediaData getMediaData(String sdkId, String indexbuf, String sdkfileid, String proxy, String passwd, int timeout);
 }

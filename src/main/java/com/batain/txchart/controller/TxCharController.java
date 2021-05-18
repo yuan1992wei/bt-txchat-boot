@@ -1,14 +1,22 @@
 package com.batain.txchart.controller;
 
+import cn.hutool.core.io.IoUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.batain.common.Entity.Result;
+import com.batain.common.utils.FileUploadUtil;
+import com.batain.txchart.domain.MediaData;
 import com.batain.txchart.service.ITxChatService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
 
 
 /**
@@ -17,6 +25,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 public class TxCharController {
+
+    Logger logger = LoggerFactory.getLogger(TxCharController.class);
 
     @Autowired
     private ITxChatService txChatService;
@@ -113,7 +123,36 @@ public class TxCharController {
     @RequestMapping("/txchat/getMediaData")
     @ResponseBody
     public Result getMediaData(String sdkId, String indexbuf, String sdkfileid, String proxy, String passwd, int timeout){
-        return txChatService.getMediaData(sdkId, indexbuf, sdkfileid, proxy, passwd, timeout);
+        MediaData mediaData =  txChatService.getMediaData(sdkId, indexbuf, sdkfileid, proxy, passwd, timeout);
+        return Result.success(mediaData);
+    }
+
+    /**
+     * 获取媒体数据
+     * @param sdkId
+     * @return
+     */
+    @RequestMapping("/txchat/downMediaData")
+    @ResponseBody
+    public void downMediaData(String sdkId, String filename,long filesize,String fileext, String indexbuf,String sdkfileid, String proxy, String passwd, int timeout, HttpServletResponse response){
+        OutputStream os = null;
+        try {
+        boolean flag = true;
+            response.setHeader("Content-Disposition", "attachment; filename=" + filename);
+            response.setContentLength(Math.toIntExact(filesize));
+            response.setContentType(FileUploadUtil.getMIMEType(fileext));
+            while (flag){
+                MediaData mediaData =  txChatService.getMediaData(sdkId, indexbuf, sdkfileid, proxy, passwd, timeout);
+                os = response.getOutputStream();
+                os.write(mediaData.getData());
+                flag = mediaData.isEnd();
+            }
+            os.flush();
+        } catch (Exception e) {
+            logger.error("下载文件断开或发送错误",e);
+        } finally {
+            IoUtil.close(os);
+        }
     }
 
 }

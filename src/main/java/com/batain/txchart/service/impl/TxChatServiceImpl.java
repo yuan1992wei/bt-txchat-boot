@@ -137,10 +137,10 @@ public class TxChatServiceImpl implements ITxChatService {
     }
 
     @Override
-    public Result getMediaData(String sdkId, String indexbuf, String sdkfileid, String proxy, String passwd, int timeout){
+    public MediaData getMediaData(String sdkId, String indexbuf, String sdkfileid, String proxy, String passwd, int timeout){
         Long sdk = sdkMap.get(sdkId);
         if(ObjectUtil.isNull(sdk)){
-            return Result.error("init sdk err");
+            throw new RuntimeException("init sdk err");
         }
         MediaData result = new MediaData();
         //每次使用GetMediaData拉取存档前需要调用NewMediaData获取一个media_data，在使用完media_data中数据后，还需要调用FreeMediaData释放。
@@ -148,7 +148,7 @@ public class TxChatServiceImpl implements ITxChatService {
         long ret = Finance.GetMediaData(sdk, indexbuf, sdkfileid, proxy, passwd, timeout, media_data);
         if(ret!=0){
             Finance.FreeMediaData(media_data);
-            return new Result(ret,"getmediadata ret:" + ret,null);
+            throw new RuntimeException("getmediadata ret:" + ret,null);
         }
         System.out.printf("getmediadata outindex len:%d, data_len:%d, is_finis:%d\n",Finance.GetIndexLen(media_data),Finance.GetDataLen(media_data), Finance.IsMediaDataFinish(media_data));
         try {
@@ -173,6 +173,6 @@ public class TxChatServiceImpl implements ITxChatService {
             result.setIndexbuf(indexbuf);
         }
 
-        return Result.success("getmediadata success",result);
+        return result;
     }
 }
