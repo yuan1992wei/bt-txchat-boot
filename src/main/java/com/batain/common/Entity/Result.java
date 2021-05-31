@@ -214,9 +214,9 @@ public class Result extends HashMap<String, Object>
         this.type = type;
     }
 
-    public int getCode()
+    public long getCode()
     {
-        return (int) this.get("code");
+        return (long) this.get("code");
     }
 
     public void setCode(int code)
