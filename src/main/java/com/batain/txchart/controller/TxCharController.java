@@ -137,15 +137,17 @@ public class TxCharController {
     public void downMediaData(String sdkId, String filename,long filesize,String fileext, String indexbuf,String sdkfileid, String proxy, String passwd, int timeout, HttpServletResponse response){
         OutputStream os = null;
         try {
-        boolean flag = true;
+        boolean flag = false;
             response.setHeader("Content-Disposition", "attachment; filename=" + filename);
             response.setContentLength(Math.toIntExact(filesize));
             response.setContentType(FileUploadUtil.getMIMEType(fileext));
-            while (flag){
+            String indexbuf = null;
+            while (!flag){
                 MediaData mediaData =  txChatService.getMediaData(sdkId, indexbuf, sdkfileid, proxy, passwd, timeout);
                 os = response.getOutputStream();
                 os.write(mediaData.getData());
                 flag = mediaData.isEnd();
+                indexbuf = mediaData.getIndexbuf();
             }
             os.flush();
         } catch (Exception e) {
