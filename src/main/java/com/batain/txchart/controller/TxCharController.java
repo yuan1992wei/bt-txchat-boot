@@ -134,7 +134,7 @@ public class TxCharController {
      */
     @RequestMapping("/txchat/downMediaData")
     @ResponseBody
-    public void downMediaData(String sdkId, String filename,long filesize,String fileext, String indexbuf,String sdkfileid, String proxy, String passwd, int timeout, HttpServletResponse response){
+    public void downMediaData(String sdkId, String filename,long filesize,String fileext,String sdkfileid, String proxy, String passwd, int timeout, HttpServletResponse response){
         OutputStream os = null;
         try {
         boolean flag = false;
