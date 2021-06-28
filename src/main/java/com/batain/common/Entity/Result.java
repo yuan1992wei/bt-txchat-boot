@@ -21,19 +21,19 @@ public class Result extends HashMap<String, Object>
     public enum Type
     {
         /** 成功 */
-        SUCCESS(0),
+        SUCCESS(0L),
         /** 警告 */
-        WARN(301),
+        WARN(301L),
         /** 错误 */
-        ERROR(500);
-        private final int value;
+        ERROR(500L);
+        private final long value;
 
-        Type(int value)
+        Type(long value)
         {
             this.value = value;
         }
 
-        public int value()
+        public long value()
         {
             return this.value;
         }
@@ -43,7 +43,7 @@ public class Result extends HashMap<String, Object>
     private Type type;
 
     /** 状态码 */
-    private int code;
+    private long code;
 
     /** 返回内容 */
     private String msg;
@@ -219,7 +219,7 @@ public class Result extends HashMap<String, Object>
         return (long) this.get("code");
     }
 
-    public void setCode(int code)
+    public void setCode(long code)
     {
         this.code = code;
     }
