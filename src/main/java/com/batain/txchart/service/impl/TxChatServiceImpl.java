@@ -31,7 +31,7 @@ public class TxChatServiceImpl implements ITxChatService {
         ret = Finance.Init(sdk, corpid, secrectkey);
         if(ret != 0){
             Finance.DestroySdk(sdk);
-            sdkMap.remove(String.valueOf(sdk));
+            sdkMap.remove(sdkId);
             return new Result(ret,"init sdk err",null);
         }
         if(StrUtil.isNotBlank(sdkId)){
@@ -50,6 +50,7 @@ public class TxChatServiceImpl implements ITxChatService {
             return Result.error("init sdk err");
         }
         Finance.DestroySdk(sdk);
+        sdkMap.remove(sdkId);
         return Result.success("destroySdk success");
     }
 
